@@ -23,14 +23,13 @@ angular.module('employeeApp', [])
         if ($scope.isEdit) {
             $http.put(`${API}/${$scope.employee.EmployeeID}`, $scope.employee)
                 .then(() => {
-                    $scope.isEdit = false;
-                    $scope.employee = {};
+                    $scope.closeModal();
                     loadEmployees();
                 });
         } else {
             $http.post(API, $scope.employee)
                 .then(() => {
-                    $scope.employee = {};
+                    $scope.closeModal();
                     loadEmployees();
                 });
         }
@@ -39,6 +38,7 @@ angular.module('employeeApp', [])
     $scope.editEmployee = function(emp) {
         $scope.employee = angular.copy(emp);
         $scope.isEdit = true;
+        $scope.showModal = true;
     };
 
     $scope.deleteEmployee = function(id) {
@@ -46,5 +46,17 @@ angular.module('employeeApp', [])
             $http.delete(`${API}/${id}`)
                 .then(loadEmployees);
         }
+    };
+
+    $scope.openModal = function() {
+        $scope.employee = {};
+        $scope.isEdit = false;
+        $scope.showModal = true;
+    };
+
+    $scope.closeModal = function() {
+        $scope.showModal = false;
+        $scope.employee = {};
+        $scope.isEdit = false;
     };
 });
