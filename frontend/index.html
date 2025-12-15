@@ -10,7 +10,12 @@
 
 <h2>Employee List</h2>
 
-<button ng-click="openModal()" class="add-btn">Tambah Karyawan</button>
+<div class="search-container">
+    <input type="text" ng-model="searchTerm" ng-change="searchEmployees()" placeholder="Cari berdasarkan nama..." class="search-input">
+</div>
+<div class="button-container">
+    <button ng-click="openModal()" class="add-btn">Tambah Karyawan</button>
+</div>
 
 <!-- Modal -->
 <div ng-show="showModal" class="modal-overlay" ng-click="closeModal()">
@@ -38,11 +43,19 @@
         <td>{{ emp.Position }}</td>
         <td>{{ emp.Salary }}</td>
         <td>
-            <button ng-click="editEmployee(emp)">Edit</button>
-            <button ng-click="deleteEmployee(emp.EmployeeID)">Delete</button>
+            <div class="action-buttons">
+                <button ng-click="editEmployee(emp)">Edit</button>
+                <button ng-click="deleteEmployee(emp.EmployeeID)">Delete</button>
+            </div>
         </td>
     </tr>
 </table>
+
+<div class="pagination" ng-show="totalPages > 1">
+    <button ng-click="prevPage()" ng-disabled="currentPage <= 1">Previous</button>
+    <span>Page {{ currentPage }} - {{ totalPages }}</span>
+    <button ng-click="nextPage()" ng-disabled="currentPage >= totalPages">Next</button>
+</div>
 
 </body>
 </html>

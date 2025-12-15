@@ -5,10 +5,22 @@ angular.module('employeeApp', [])
 
     $scope.isEdit = false;
     $scope.employee = {};
+    $scope.currentPage = 1;
+    $scope.limit = 10;
+    $scope.searchTerm = '';
+    $scope.total = 0;
+    $scope.totalPages = 0;
 
     function loadEmployees() {
-        $http.get(API).then(res => {
-            $scope.employees = res.data;
+        const params = {
+            page: $scope.currentPage,
+            limit: $scope.limit,
+            search: $scope.searchTerm
+        };
+        $http.get(API, { params }).then(res => {
+            $scope.employees = res.data.data;
+            $scope.total = res.data.total;
+            $scope.totalPages = Math.ceil($scope.total / $scope.limit);
         });
     }
 
@@ -58,5 +70,24 @@ angular.module('employeeApp', [])
         $scope.showModal = false;
         $scope.employee = {};
         $scope.isEdit = false;
+    };
+
+    $scope.searchEmployees = function() {
+        $scope.currentPage = 1;
+        loadEmployees();
+    };
+
+    $scope.prevPage = function() {
+        if ($scope.currentPage > 1) {
+            $scope.currentPage--;
+            loadEmployees();
+        }
+    };
+
+    $scope.nextPage = function() {
+        if ($scope.currentPage < $scope.totalPages) {
+            $scope.currentPage++;
+            loadEmployees();
+        }
     };
 });

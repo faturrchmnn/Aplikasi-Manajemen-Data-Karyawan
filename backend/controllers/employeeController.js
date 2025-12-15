@@ -3,8 +3,36 @@ const { poolPromise, sql } = require('../config/db');
 exports.getAllEmployees = async (req, res) => {
     try {
         const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM Employees');
-        res.json(result.recordset);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const search = req.query.search || '';
+        const offset = (page - 1) * limit;
+
+        let query = 'SELECT * FROM Employees';
+        let countQuery = 'SELECT COUNT(*) as total FROM Employees';
+        const request = pool.request();
+
+        if (search) {
+            query += ' WHERE Name LIKE @search';
+            countQuery += ' WHERE Name LIKE @search';
+            request.input('search', sql.VarChar, `%${search}%`);
+        }
+
+        query += ' ORDER BY EmployeeID OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY';
+        request.input('offset', sql.Int, offset);
+        request.input('limit', sql.Int, limit);
+
+        const [result, countResult] = await Promise.all([
+            request.query(query),
+            pool.request().input('search', sql.VarChar, search ? `%${search}%` : '').query(countQuery)
+        ]);
+
+        res.json({
+            data: result.recordset,
+            total: countResult.recordset[0].total,
+            page,
+            limit
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
