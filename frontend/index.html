@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="employeeApp">
+<head>
+    <title>Employee Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app.js"></script>
+</head>
+<body ng-controller="EmployeeController">
+
+<h2>Employee List</h2>
+
+<form ng-submit="saveEmployee()">
+    <input type="text" ng-model="employee.name" placeholder="Name" required>
+    <input type="text" ng-model="employee.position" placeholder="Position">
+    <input type="number" ng-model="employee.salary" placeholder="Salary" required>
+    <button type="submit">{{ isEdit ? 'Update' : 'Add' }}</button>
+</form>
+
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Position</th>
+        <th>Salary</th>
+        <th>Action</th>
+    </tr>
+    <tr ng-repeat="emp in employees">
+        <td>{{ emp.Name }}</td>
+        <td>{{ emp.Position }}</td>
+        <td>{{ emp.Salary }}</td>
+        <td>
+            <button ng-click="editEmployee(emp)">Edit</button>
+            <button ng-click="deleteEmployee(emp.EmployeeID)">Delete</button>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
