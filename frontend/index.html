@@ -26,6 +26,9 @@
             <input type="text" ng-model="employee.name" placeholder="Name" required>
             <input type="text" ng-model="employee.position" placeholder="Position">
             <input type="number" ng-model="employee.salary" placeholder="Salary" required>
+            <select ng-model="employee.departmentId" ng-options="d.DepartmentID as d.DepartmentName for d in departments"required>
+                <option value="">-- Select Department --</option>
+            </select>
             <button type="submit">{{ isEdit ? 'Update' : 'Add' }}</button>
         </form>
     </div>
@@ -35,12 +38,14 @@
     <tr>
         <th>Name</th>
         <th>Position</th>
+        <th>Department</th>
         <th>Salary</th>
         <th>Action</th>
     </tr>
     <tr ng-repeat="emp in employees">
         <td>{{ emp.Name }}</td>
         <td>{{ emp.Position }}</td>
+        <td>{{ emp.DepartmentName || 'N/A' }}</td>
         <td>{{ emp.Salary }}</td>
         <td>
             <div class="action-buttons">
